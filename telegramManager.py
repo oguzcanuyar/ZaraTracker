@@ -2,6 +2,7 @@ import requests
 import TelegramData
 import time
 import ZaraChecker
+from datetime import datetime
 
 OFFSET = 0  # Daha önce işlenmiş mesajları tekrar almamak için kullanılır
 
@@ -13,6 +14,8 @@ size_mapping = {
     "xl": "XL (US XL)"
 }
 
+# Define the bot's start date
+bot_start_date = datetime(2023, 10, 1)  # Example start date
 
 def send_telegram_message(message):
     url = f"https://api.telegram.org/bot{TelegramData.TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -28,6 +31,7 @@ def send_telegram_message(message):
         print("Bildirim gönderilemedi:", response.text)
 
 def listen_to_user():
+    bot_start_date = datetime.now()
     url = f"https://api.telegram.org/bot{TelegramData.TELEGRAM_BOT_TOKEN}"
     send_telegram_message("Bot başlatılıyor...")
     send_telegram_message("url : ürün linki yazınız.")
@@ -55,6 +59,13 @@ def listen_to_user():
             if not message:
                 continue
             
+            # Assuming message contains a "date" field with the timestamp
+            message_date = datetime.fromtimestamp(message["date"])
+
+            # Skip the message if it's older than the bot's start date
+            if message_date < bot_start_date:
+                continue
+
             chat_id = message["chat"]["id"]
             text = message.get("text")
 
