@@ -12,10 +12,10 @@ size_mapping = {
     "xl": "XL (US XL)"
 }
 
+url = f"https://api.telegram.org/bot{TelegramData.TELEGRAM_BOT_TOKEN}/sendMessage"
 
 def send_telegram_message(message):
     """Telegram üzerinden bildirim gönder."""
-    url = f"https://api.telegram.org/bot{TelegramData.TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {
         "chat_id": TelegramData.TELEGRAM_CHAT_ID,
         "text": message
@@ -35,7 +35,7 @@ def listen_to_user():
 
     while True:
         # Kullanıcı mesajlarını al
-        response = requests.get(f"{TelegramData.TELEGRAM_API_URL}/getUpdates?offset={OFFSET}")
+        response = requests.get(f"{url}/getUpdates?offset={OFFSET}")
         if response.status_code != 200:
             print("Mesajlar alınamadı:", response.text)
             continue
