@@ -46,7 +46,14 @@ url = "https://www.zara.com/tr/tr/jakar-crop-kesim-ceket-p04575303.html?v1=40468
 desired_size = "XL (US XL)"
 
 # Belirli aralıklarla kontrol
+
+initial=True
 while True:
+    if initial:
+        initial = False
+        message = f"Bot başlatılıyor... Beden : {desired_size} Link : {url}"
+        telegramManager.send_telegram_message(message)
+
     if check_product_availability(url, desired_size):
         print(f"{desired_size} bedeni stokta!")
         message = f"🚨 {desired_size} bedeni stokta! Link: {url}"
