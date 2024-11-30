@@ -30,13 +30,15 @@ def send_telegram_message(message):
     else:
         print("Bildirim gönderilemedi:", response.text)
 
+def send_inits():
+    send_telegram_message("url: ürün linki yazınız.")
+    send_telegram_message("beden: ürün bedenini yazınız.(xs,s,m,l,xl)")
+
 def listen_to_user():
     bot_start_date = datetime.now()
     telegramurl = f"https://api.telegram.org/bot{TelegramData.TELEGRAM_BOT_TOKEN}"
     send_telegram_message("Bot başlatılıyor...")
-    send_telegram_message("url: ürün linki yazınız.")
-    send_telegram_message("beden: ürün bedenini yazınız.(xs,s,m,l,xl)")
-
+    send_inits()
 
     global OFFSET
     desired_size = None
@@ -81,6 +83,13 @@ def listen_to_user():
                 send_telegram_message(f"Ürün URL'si alındı: {url}")
             
             # Kullanıcıdan beden bilgisi alma ve eşleme
+
+            if text.lower() == "iptal":
+                send_telegram_message("İşlem iptal edildi.")
+                url, desired_size = None, None
+                send_inits()
+                continue
+
             elif text.lower().startswith("beden:"):
                 size_input = text.split(":", 1)[1].strip().lower()  # Küçük harfe dönüştür
                 desired_size = size_mapping.get(size_input)  # Eşleme tablosundan al
@@ -91,16 +100,15 @@ def listen_to_user():
                     send_telegram_message(f"Geçersiz beden girdiniz: {size_input}. Geçerli bedenler: S, M, L, XL.")
                     continue
             
-            # URL ve beden alındıysa stok kontrolüne başla
-            if url and desired_size:
-                send_telegram_message(f"Stok kontrolü başlıyor: {url} - {desired_size}")
-                while True:
-                    if ZaraChecker.check_product_availability(url, desired_size):
-                        send_telegram_message(f"🚨 {desired_size} bedeni stokta! Link: {url}")
-                        break
-                    #else:
-                    #    send_telegram_message(f"{desired_size} bedeni stokta değil, tekrar kontrol ediliyor...")
-                    time.sleep(60)  # 60 saniyede bir kontrol
+        # URL ve beden alındıysa stok kontrolüne başla
+        if url and desired_size:
+            send_telegram_message(f"Stok kontrolü başlıyor: {url} - {desired_size}")
+            if ZaraChecker.check_product_availability(url, desired_size):
+                send_telegram_message(f"🚨 {desired_size} bedeni stokta! Link: {url}")
                 url, desired_size = None, None
+                break
+            #else:
+            #    send_telegram_message(f"{desired_size} bedeni stokta değil, tekrar kontrol ediliyor...")
+            time.sleep(60)  # 60 saniyede bir kontrol
 
         time.sleep(1)
