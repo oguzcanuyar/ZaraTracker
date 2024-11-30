@@ -60,7 +60,10 @@ def listen_to_user():
                 continue
             
             # Assuming message contains a "date" field with the timestamp
-            message_date = datetime.fromtimestamp(message["date"])
+            timestamp = message["date"]
+
+            # Convert Unix timestamp to datetime object
+            message_date = datetime.fromtimestamp(timestamp)
 
             # Skip the message if it's older than the bot's start date
             if message_date < bot_start_date:
