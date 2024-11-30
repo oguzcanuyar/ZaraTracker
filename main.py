@@ -49,7 +49,8 @@ desired_size = "XL (US XL)"
 while True:
     if check_product_availability(url, desired_size):
         print(f"{desired_size} bedeni stokta!")
-        telegramManager.send_telegram_message(f"{desired_size} bedeni stokta!")
+        message = f"🚨 {desired_size} bedeni stokta! Link: {url}"
+        telegramManager.send_telegram_message(message)
         break
     else:
         print(f"{desired_size} bedeni stokta değil, tekrar kontrol ediliyor...")
