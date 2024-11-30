@@ -60,7 +60,7 @@ def listen_to_user():
             # Kullanıcıdan URL alma
             if text.lower().startswith("url:"):
                 url = text.split(":", 1)[1].strip()
-                send_telegram_message(chat_id, f"Ürün URL'si alındı: {url}")
+                send_telegram_message(f"Ürün URL'si alındı: {url}")
             
             # Kullanıcıdan beden bilgisi alma ve eşleme
             elif text.lower().startswith("beden:"):
@@ -68,20 +68,20 @@ def listen_to_user():
                 desired_size = size_mapping.get(size_input)  # Eşleme tablosundan al
                 
                 if desired_size:
-                    send_telegram_message(chat_id, f"Beden bilgisi alındı: {desired_size}")
+                    send_telegram_message(f"Beden bilgisi alındı: {desired_size}")
                 else:
-                    send_telegram_message(chat_id, f"Geçersiz beden girdiniz: {size_input}. Geçerli bedenler: S, M, L, XL.")
+                    send_telegram_message(f"Geçersiz beden girdiniz: {size_input}. Geçerli bedenler: S, M, L, XL.")
                     continue
             
             # URL ve beden alındıysa stok kontrolüne başla
             if url and desired_size:
-                send_telegram_message(chat_id, f"Stok kontrolü başlıyor: {url} - {desired_size}")
+                send_telegram_message(f"Stok kontrolü başlıyor: {url} - {desired_size}")
                 while True:
                     if ZaraChecker.check_product_availability(url, desired_size):
-                        send_telegram_message(chat_id, f"🚨 {desired_size} bedeni stokta! Link: {url}")
+                        send_telegram_message(f"🚨 {desired_size} bedeni stokta! Link: {url}")
                         break
                     else:
-                        send_telegram_message(chat_id, f"{desired_size} bedeni stokta değil, tekrar kontrol ediliyor...")
+                        send_telegram_message(f"{desired_size} bedeni stokta değil, tekrar kontrol ediliyor...")
                     time.sleep(60)  # 60 saniyede bir kontrol
                 url, desired_size = None, None
 
