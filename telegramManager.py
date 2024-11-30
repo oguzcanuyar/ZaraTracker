@@ -32,10 +32,10 @@ def send_telegram_message(message):
 
 def listen_to_user():
     bot_start_date = datetime.now()
-    url = f"https://api.telegram.org/bot{TelegramData.TELEGRAM_BOT_TOKEN}"
+    telegramurl = f"https://api.telegram.org/bot{TelegramData.TELEGRAM_BOT_TOKEN}"
     send_telegram_message("Bot başlatılıyor...")
-    send_telegram_message("url : ürün linki yazınız.")
-    send_telegram_message("size : ürün size yazınız.(xs,s,m,l,xl)")
+    send_telegram_message("url: ürün linki yazınız.")
+    send_telegram_message("size: ürün size yazınız.(xs,s,m,l,xl)")
 
 
     global OFFSET
@@ -43,7 +43,7 @@ def listen_to_user():
 
     while True:
         # Kullanıcı mesajlarını al
-        response = requests.get(f"{url}/getUpdates?offset={OFFSET}")
+        response = requests.get(f"{telegramurl}/getUpdates?offset={OFFSET}")
         if response.status_code != 200:
             print("Mesajlar alınamadı:", response.text)
             continue
