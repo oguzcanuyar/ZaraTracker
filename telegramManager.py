@@ -15,6 +15,7 @@ size_mapping = {
 url = f"https://api.telegram.org/bot{TelegramData.TELEGRAM_BOT_TOKEN}/sendMessage"
 
 def send_telegram_message(message):
+    global url
     """Telegram üzerinden bildirim gönder."""
     payload = {
         "chat_id": TelegramData.TELEGRAM_CHAT_ID,
@@ -30,7 +31,7 @@ def listen_to_user():
     send_telegram_message("Bot başlatılıyor...")
 
     global OFFSET
-    url = None
+    global url
     desired_size = None
 
     while True:
