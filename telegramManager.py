@@ -5,6 +5,13 @@ import main
 
 OFFSET = 0  # Daha önce işlenmiş mesajları tekrar almamak için kullanılır
 
+size_mapping = {
+    "s": "S (US S)",
+    "m": "M (US M)",
+    "l": "L (US L)",
+    "xl": "XL (US XL)"
+}
+
 
 def send_telegram_message(message):
     """Telegram üzerinden bildirim gönder."""
@@ -19,7 +26,6 @@ def send_telegram_message(message):
     else:
         print("Bildirim gönderilemedi:", response.text)
 
-# Kullanıcıdan mesaj alma ve işleme
 def listen_to_user():
     global OFFSET
     url = None
@@ -49,13 +55,21 @@ def listen_to_user():
             if not text:
                 continue
             
-            # Kullanıcıdan URL ve beden bilgisi alma
+            # Kullanıcıdan URL alma
             if text.lower().startswith("url:"):
                 url = text.split(":", 1)[1].strip()
                 send_telegram_message(chat_id, f"Ürün URL'si alındı: {url}")
+            
+            # Kullanıcıdan beden bilgisi alma ve eşleme
             elif text.lower().startswith("beden:"):
-                desired_size = text.split(":", 1)[1].strip()
-                send_telegram_message(chat_id, f"Beden bilgisi alındı: {desired_size}")
+                size_input = text.split(":", 1)[1].strip().lower()  # Küçük harfe dönüştür
+                desired_size = size_mapping.get(size_input)  # Eşleme tablosundan al
+                
+                if desired_size:
+                    send_telegram_message(chat_id, f"Beden bilgisi alındı: {desired_size}")
+                else:
+                    send_telegram_message(chat_id, f"Geçersiz beden girdiniz: {size_input}. Geçerli bedenler: S, M, L, XL.")
+                    continue
             
             # URL ve beden alındıysa stok kontrolüne başla
             if url and desired_size:
