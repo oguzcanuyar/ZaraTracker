@@ -6,6 +6,7 @@ import ZaraChecker
 OFFSET = 0  # Daha önce işlenmiş mesajları tekrar almamak için kullanılır
 
 size_mapping = {
+    "xs": "S (US S)",
     "s": "S (US S)",
     "m": "M (US M)",
     "l": "L (US L)",
@@ -29,6 +30,9 @@ def send_telegram_message(message):
 def listen_to_user():
     url = f"https://api.telegram.org/bot{TelegramData.TELEGRAM_BOT_TOKEN}"
     send_telegram_message("Bot başlatılıyor...")
+    send_telegram_message("url : ürün linki yazınız.")
+    send_telegram_message("size : ürün size yazınız.(xs,s,m,l,xl)")
+
 
     global OFFSET
     desired_size = None
