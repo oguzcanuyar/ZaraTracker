@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import time
+import telegramManager
 
 def check_product_availability(url, desired_size):
     try:
@@ -48,6 +49,7 @@ desired_size = "XL (US XL)"
 while True:
     if check_product_availability(url, desired_size):
         print(f"{desired_size} bedeni stokta!")
+        telegramManager.send_telegram_message(f"{desired_size} bedeni stokta!")
         break
     else:
         print(f"{desired_size} bedeni stokta değil, tekrar kontrol ediliyor...")
