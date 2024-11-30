@@ -1,5 +1,10 @@
 import requests
 import TelegramData
+import time
+import main
+
+OFFSET = 0  # Daha önce işlenmiş mesajları tekrar almamak için kullanılır
+
 
 def send_telegram_message(message):
     """Telegram üzerinden bildirim gönder."""
@@ -13,3 +18,55 @@ def send_telegram_message(message):
         print("Bildirim gönderildi:", message)
     else:
         print("Bildirim gönderilemedi:", response.text)
+
+# Kullanıcıdan mesaj alma ve işleme
+def listen_to_user():
+    global OFFSET
+    url = None
+    desired_size = None
+
+    while True:
+        # Kullanıcı mesajlarını al
+        response = requests.get(f"{TelegramData.TELEGRAM_API_URL}/getUpdates?offset={OFFSET}")
+        if response.status_code != 200:
+            print("Mesajlar alınamadı:", response.text)
+            continue
+        
+        updates = response.json()["result"]
+        if not updates:
+            time.sleep(2)
+            continue
+        
+        for update in updates:
+            OFFSET = update["update_id"] + 1
+            message = update.get("message")
+            if not message:
+                continue
+            
+            chat_id = message["chat"]["id"]
+            text = message.get("text")
+
+            if not text:
+                continue
+            
+            # Kullanıcıdan URL ve beden bilgisi alma
+            if text.lower().startswith("url:"):
+                url = text.split(":", 1)[1].strip()
+                send_telegram_message(chat_id, f"Ürün URL'si alındı: {url}")
+            elif text.lower().startswith("beden:"):
+                desired_size = text.split(":", 1)[1].strip()
+                send_telegram_message(chat_id, f"Beden bilgisi alındı: {desired_size}")
+            
+            # URL ve beden alındıysa stok kontrolüne başla
+            if url and desired_size:
+                send_telegram_message(chat_id, f"Stok kontrolü başlıyor: {url} - {desired_size}")
+                while True:
+                    if main.check_product_availability(url, desired_size):
+                        send_telegram_message(chat_id, f"🚨 {desired_size} bedeni stokta! Link: {url}")
+                        break
+                    else:
+                        send_telegram_message(chat_id, f"{desired_size} bedeni stokta değil, tekrar kontrol ediliyor...")
+                    time.sleep(60)  # 60 saniyede bir kontrol
+                url, desired_size = None, None
+
+        time.sleep(1)

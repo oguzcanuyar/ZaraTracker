@@ -48,17 +48,6 @@ desired_size = "XL (US XL)"
 # Belirli aralıklarla kontrol
 
 initial=True
-while True:
-    if initial:
-        initial = False
-        message = f"Bot başlatılıyor... Beden : {desired_size} Link : {url}"
-        telegramManager.send_telegram_message(message)
-
-    if check_product_availability(url, desired_size):
-        print(f"{desired_size} bedeni stokta!")
-        message = f"🚨 {desired_size} bedeni stokta! Link: {url}"
-        telegramManager.send_telegram_message(message)
-        break
-    else:
-        print(f"{desired_size} bedeni stokta değil, tekrar kontrol ediliyor...")
-    time.sleep(60)  # 60 saniyede bir kontrol et
+message = f"Bot başlatılıyor... Beden : {desired_size} Link : {url}"
+telegramManager.send_telegram_message(message)
+telegramManager.listen_to_user()
