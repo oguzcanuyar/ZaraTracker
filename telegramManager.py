@@ -1,7 +1,7 @@
 import requests
 import TelegramData
 import time
-import main
+import ZaraChecker
 
 OFFSET = 0  # Daha önce işlenmiş mesajları tekrar almamak için kullanılır
 
@@ -27,6 +27,8 @@ def send_telegram_message(message):
         print("Bildirim gönderilemedi:", response.text)
 
 def listen_to_user():
+    send_telegram_message("Bot başlatılıyor...")
+
     global OFFSET
     url = None
     desired_size = None
@@ -75,7 +77,7 @@ def listen_to_user():
             if url and desired_size:
                 send_telegram_message(chat_id, f"Stok kontrolü başlıyor: {url} - {desired_size}")
                 while True:
-                    if main.check_product_availability(url, desired_size):
+                    if ZaraChecker.check_product_availability(url, desired_size):
                         send_telegram_message(chat_id, f"🚨 {desired_size} bedeni stokta! Link: {url}")
                         break
                     else:
