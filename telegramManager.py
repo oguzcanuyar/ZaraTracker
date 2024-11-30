@@ -42,6 +42,7 @@ def listen_to_user():
 
     global OFFSET
     desired_size = None
+    url = None
 
     while True:
         # Kullanıcı mesajlarını al
@@ -84,7 +85,7 @@ def listen_to_user():
             
             # Kullanıcıdan beden bilgisi alma ve eşleme
 
-            if text.lower() == "iptal":
+            elif text.lower() == "iptal":
                 send_telegram_message("İşlem iptal edildi.")
                 url, desired_size = None, None
                 send_inits()
