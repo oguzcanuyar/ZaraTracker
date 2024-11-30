@@ -7,7 +7,7 @@ from datetime import datetime
 OFFSET = 0  # Daha önce işlenmiş mesajları tekrar almamak için kullanılır
 
 size_mapping = {
-    "xs": "S (US S)",
+    "xs": "XS (US XS)",
     "s": "S (US S)",
     "m": "M (US M)",
     "l": "L (US L)",
@@ -35,7 +35,7 @@ def listen_to_user():
     telegramurl = f"https://api.telegram.org/bot{TelegramData.TELEGRAM_BOT_TOKEN}"
     send_telegram_message("Bot başlatılıyor...")
     send_telegram_message("url: ürün linki yazınız.")
-    send_telegram_message("size: ürün size yazınız.(xs,s,m,l,xl)")
+    send_telegram_message("beden: ürün bedenini yazınız.(xs,s,m,l,xl)")
 
 
     global OFFSET
@@ -98,8 +98,8 @@ def listen_to_user():
                     if ZaraChecker.check_product_availability(url, desired_size):
                         send_telegram_message(f"🚨 {desired_size} bedeni stokta! Link: {url}")
                         break
-                    else:
-                        send_telegram_message(f"{desired_size} bedeni stokta değil, tekrar kontrol ediliyor...")
+                    #else:
+                    #    send_telegram_message(f"{desired_size} bedeni stokta değil, tekrar kontrol ediliyor...")
                     time.sleep(60)  # 60 saniyede bir kontrol
                 url, desired_size = None, None
 
